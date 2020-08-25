@@ -11,7 +11,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
 class RegistrationCodeController extends AbstractController
 {
@@ -36,6 +35,7 @@ class RegistrationCodeController extends AbstractController
     /**
      * @Route("/search", name="search")
      * @param Request $request
+     * @param EntityManagerInterface $entityManager
      * @return Response
      */
     public function results(Request $request, EntityManagerInterface $entityManager)
@@ -50,29 +50,16 @@ class RegistrationCodeController extends AbstractController
             return $this->redirectToRoute('registration_code');
         }
         date_default_timezone_set('UTC');
-        $date = date('Y/m/d h:i:s', time());
-   // var_dump($date);
+
         $customerFirstName = $recipes[0]->getCustomerFirstName();
         $customerAppointmentTime = $recipes[0]->getAppointmentTime();
-      //  var_dump($customerAppointmentTime);
-       // $date2 = strtotime($customerAppointmentTime['datetimefield']);
-       // echo $customerFirstName;
-      //  echo date('Y-m-d H:i:s', $date2);
-        $customerAppointmentTime =  $customerAppointmentTime->format('Y/m/d h:i:s');
 
+        $customerAppointmentTime =  $customerAppointmentTime->format('Y/m/d h:i:s');
         $now = new DateTime();
         $x = DateTime::createFromFormat('U', strtotime($customerAppointmentTime));
-       // $diff = $now->diff($x);
 
-// Function call to find date difference
-       // $dateDiff = date_diff($customerAppointmentTime, $date);
-       // var_dump($dateDiff);
         $customerRemainingTime = $now->diff($x)->format("%y years %m months, %d days, %h hours %i minutes and %s seconds");
 
-
-// Display the result
-        //  printf("Difference between two dates: "
-        //      . $dateDiff . " Days ");
         $form = $this->createForm(CancelType::class);
 
         $form->handleRequest($request);
