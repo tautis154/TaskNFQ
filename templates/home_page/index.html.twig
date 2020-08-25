@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello HomePageController!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+
+    <body id="section1" class="bc-index">
+    {% include 'components/layout/navbar_vertical.html.twig' %}
+    <div class="wrap">
+
+        {{ form_start(search_form) }}
+        {{ form_widget(search_form.name, {'attr':
+            {'class': 'search-term', 'placeholder': 'Vardas'}}
+        ) }}
+
+        {{ form_widget(search_form.doctors, {'attr':
+            {'class': 'form-control form-control-lg', 'placeholder': 'Specialistas'}}
+        ) }}
+        {{ form_widget(search_form.search, {'attr':
+            {'class': 'search-button', 'label': 'Ieškoti'}}
+        ) }}
+        {{ form_end(search_form) }}
+    </div>
+</div>
+{% endblock %}

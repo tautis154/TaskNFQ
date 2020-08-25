@@ -9,6 +9,38 @@
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
     </head>
+    {% block header %}
+        <header>
+            <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+                <div class="container">
+
+                    <div class="collapse navbar-collapse">
+                        <ul class="navbar-nav ml-auto">
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('home') }}">Home</a>
+                                </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('registration_code') }}">Check Appointment</a>
+                            </li>
+
+
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
+    {% endblock %}
+    {% block flash_messages %}
+        {% for type, messages in app.session.flashbag.all() %}
+            {% for message in messages %}
+                <div class="alert alert-{{ type }} alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">{% trans %}Close{% endtrans %}</span></button>
+                    {{ message | raw }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    {% endblock %}
     <body>
         {% block body %}{% endblock %}
         {% block javascripts %}
