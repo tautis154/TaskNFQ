@@ -6,10 +6,11 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class RegistrationCodeType extends AbstractType
+class BoardControllerType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -21,7 +22,7 @@ class RegistrationCodeType extends AbstractType
                     ]),
                     new Length([
                         'min' => 1,
-                        'minMessage' => 'Registration code  is too short',
+                        'minMessage' => 'Registration code is too short',
                         // max length allowed by Symfony for security reasons
                         'max' => 210,
                         'maxMessage' => 'Registration code  is too long',

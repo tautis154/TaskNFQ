@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello RegistrationCodeController!{% endblock %}
+
+{% block body %}
+    <style>
+        .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+        .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    </style>
+    <meta http-equiv="refresh" content="5">
+
+
+    <div class="example-wrapper">
+
+        <h1>Dabar pas daktara yra</h1>
+        {% if customers is defined %}
+            {% for customer in customers %}
+                Customer Name            Doctor Name
+                <br>
+                Padaryt kad cia ilgis butu kokia min 20 ar kazkas panasiai
+                {{ customer.customerFirstName }}   {{ doctorFirstNames.0 }}
+                <br>
+
+                <br>
+            {% endfor %}
+        {% endif %}
+
+        <h1>Upcoming Visits</h1>
+        {% set counter = 0 %}
+        {% if upcomingCustomers is defined %}
+            {% for key,customer in upcomingCustomers %}
+                Customer Name            Doctor name                   Visit Date           Time left till visit
+                <br>
+                Padaryt kad cia ilgis butu kokia min 20 ar kazkas panasiai
+                {{ customer.customerFirstName }}
+                {{ doctorFirstNamesUpcomingVisit[key]}}
+                {{ customer.appointmentTime |date('Y-m-d h:m') }}
+                {{ timeLeftForCustomers[key]  }}
+                {% set counter = counter + 1 %}
+                <br>
+
+                <br>
+            {% endfor %}
+        {% endif %}
+
+    </div>
+{% endblock %}

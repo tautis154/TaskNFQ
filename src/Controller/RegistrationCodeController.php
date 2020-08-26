@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 class RegistrationCodeController extends AbstractController
 {
@@ -49,7 +50,7 @@ class RegistrationCodeController extends AbstractController
             $this->addFlash('warning', 'No such registration code exists, Try entering it again');
             return $this->redirectToRoute('registration_code');
         }
-        date_default_timezone_set('UTC');
+      //  date_default_timezone_set('UTC');
 
         $customerFirstName = $recipes[0]->getCustomerFirstName();
         $customerAppointmentTime = $recipes[0]->getAppointmentTime();
@@ -58,8 +59,23 @@ class RegistrationCodeController extends AbstractController
         $now = new DateTime();
         $x = DateTime::createFromFormat('U', strtotime($customerAppointmentTime));
 
-        $customerRemainingTime = $now->diff($x)->format("%y years %m months, %d days, %h hours %i minutes and %s seconds");
+       // $customerRemainingTime = $now->diff($x)->format("%y years %m months, %d days, %h hours %i minutes and %s seconds");
+        $interval = array_filter((array) $now->diff($x));
+        $timeLeft = array();
+        $spec = ['y' => 'years', 'm' => 'months', 'd' => 'days', 'h' => 'hours', 'i' => 'minutes', 's' => 'seconds' ];
+        foreach ($spec as $key => $unit) {
+            if (array_key_exists($key, $interval)) {
+                $timeLeft[] = "{$interval[$key]} $unit";
+            }
+        }
 
+        if ((count($timeLeft)) > 1) {
+            $last = array_pop($timeLeft);
+            $timeLeft[] = "and $last";
+        }
+
+        $timeLeft =  implode(' ', $timeLeft);
+        //die();
         $form = $this->createForm(CancelType::class);
 
         $form->handleRequest($request);
@@ -79,6 +95,6 @@ class RegistrationCodeController extends AbstractController
         return $this->render('registration_code/results.html.twig', [
             'form' => $form->createView(),
             'customerName' => $customerFirstName,
-            'remainingTime' => $customerRemainingTime]);
+            'remainingTime' => $timeLeft]);
     }
 }

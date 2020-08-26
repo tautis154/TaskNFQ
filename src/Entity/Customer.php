@@ -47,6 +47,7 @@ class Customer
      */
     private $appointmentTime;
 
+
     public function getId(): ?int
     {
         return $this->id;
@@ -123,4 +124,5 @@ class Customer
 
         return $this;
     }
+
 }

@@ -20,6 +20,41 @@ class CustomerRepository extends ServiceEntityRepository
         parent::__construct($registry, Customer::class);
     }
 
+    public function getCustomersInAppointmentId()
+    {
+
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = "
+        select *
+        from customer
+        where customer.is_in_appointment = '1';
+        ";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAll(\PDO::FETCH_COLUMN);
+    }
+
+    public function getUpcomingCustomersAppointmentId()
+    {
+
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = "
+        select *
+        from customer
+        where customer.is_in_appointment = '0' AND customer.appointment_is_finished = '0'
+        ORDER BY customer.appointment_time 
+        LIMIT 5;
+        
+        ";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAll(\PDO::FETCH_COLUMN);
+    }
+
     // /**
     //  * @return Customer[] Returns an array of Customer objects
     //  */
