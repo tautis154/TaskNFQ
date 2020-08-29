@@ -5,11 +5,12 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\DoctorRepository")
  */
-class Doctor
+class Doctor implements UserInterface, \Serializable
 {
     /**
      * @ORM\Id()
@@ -19,14 +20,14 @@ class Doctor
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=15)
+     * @ORM\Column(type="string", length=15, unique=true)
      */
-    private $userName;
+    private $username;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $userPassword;
+    private $password;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -53,26 +54,26 @@ class Doctor
         return $this->id;
     }
 
-    public function getUserName(): ?string
+    public function getUsername(): ?string
     {
-        return $this->userName;
+        return $this->username;
     }
 
-    public function setUserName(string $userName): self
+    public function setUsername(string $username): self
     {
-        $this->userName = $userName;
+        $this->username = $username;
 
         return $this;
     }
 
-    public function getUserPassword(): ?string
+    public function getPassword(): ?string
     {
-        return $this->userPassword;
+        return $this->password;
     }
 
-    public function setUserPassword(string $userPassword): self
+    public function setPassword(string $password): self
     {
-        $this->userPassword = $userPassword;
+        $this->password = $password;
 
         return $this;
     }
@@ -130,5 +131,41 @@ class Doctor
         }
 
         return $this;
+    }
+
+    public function getRoles()
+    {
+        return [
+            'ROLE_USER'
+        ];
+    }
+
+
+    public function getSalt()
+    {
+        // TODO: Implement getSalt() method.
+    }
+
+    public function eraseCredentials()
+    {
+        // TODO: Implement eraseCredentials() method.
+    }
+
+    public function serialize()
+    {
+        return serialize([
+            $this->id,
+            $this->username,
+            $this->password
+        ]);
+    }
+
+    public function unserialize($string)
+    {
+        list (
+            $this->id,
+            $this->username,
+            $this->password
+            ) = unserialize($string, ['allowed_classes' => false]);
     }
 }

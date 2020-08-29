@@ -30,7 +30,6 @@ class HomePageController extends AbstractController
     public function index(Request $request, EntityManagerInterface $entityManager)
     {
 
-
         $choices = array();
 
         $doctors = $this->getDoctrine()->getRepository(Doctor::class)->findAll();
@@ -41,7 +40,20 @@ class HomePageController extends AbstractController
 
         $form = $this->createFormBuilder([])
 
+            ->add('doctors', ChoiceType::class, [
+                'label' => 'Doctor',
+                'placeholder' => 'Select a doctor',
+                'choices' => $choices,
+                'required' => false,
+                'label_attr' => [
+                    'class' => 'col-sm-2 control-label',
+                ],
+            ])
             ->add('firstName', TextType::class, [
+                'label' => 'First Name',
+                'label_attr' => [
+                    'class' => 'col-sm-2 control-label',
+                ],
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Please enter your name',
@@ -55,17 +67,16 @@ class HomePageController extends AbstractController
                     ])
                 ]
             ])
-            ->add('doctors', ChoiceType::class, [
-                'placeholder' => 'Select a doctor',
-                'choices' => $choices,
-                'required' => false,
-            ])
             ->add('selectedTime', DateTimeType::class, [
                 'placeholder' => [
                     'year' => 'Year', 'month' => 'Month', 'day' => 'Day', 'hour' => 'Hour', 'minute' => 'Minute'
                 ]
             ])
-            ->add('search', SubmitType::class, ['label' => 'Register'])
+
+            ->add('search', SubmitType::class, [
+                'label' => 'Register',
+
+            ])
             ->getForm();
 
         $form->handleRequest($request);
@@ -73,14 +84,12 @@ class HomePageController extends AbstractController
             $customer = new Customer();
             $length = 20;
             $bytes = substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 1, $length);
-           // var_dump($bytes);
 
             $customer->setCustomerFirstName(ucfirst(trim($form['firstName']->getData())));
             $customer->setCustomerReservationCode($bytes);
-           // var_dump($bytes);
+
             $doctor_id = $form['doctors']->getData();
-            //var_dump($bytes);
-            //die();
+
             $post = $this->getDoctrine()->getRepository(Doctor::class)->find($doctor_id);
             $customer->setFkDoctor($post);
             $customer->setAppointmentTime($form['selectedTime']->getData());

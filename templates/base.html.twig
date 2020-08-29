@@ -3,7 +3,6 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width,initial-scale=1.0">
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
         <title>{% block title %}Welcome!{% endblock %}</title>
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
@@ -26,7 +25,20 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ path('display_board') }}">Display Board</a>
                             </li>
+                            {% if app.user %}
 
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('customer_managing') }}">Customer Managing</a>
+                                </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_logout') }}">Logout</a>
+                            </li>
+
+                            {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('login') }}">Login</a>
+                            </li>
+                            {% endif %}
 
                         </ul>
                     </div>

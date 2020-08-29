@@ -20,6 +20,8 @@ class CustomerRepository extends ServiceEntityRepository
         parent::__construct($registry, Customer::class);
     }
 
+
+
     public function getCustomersInAppointmentId()
     {
 
@@ -44,7 +46,7 @@ class CustomerRepository extends ServiceEntityRepository
         select *
         from customer
         where customer.is_in_appointment = '0' AND customer.appointment_is_finished = '0'
-        ORDER BY customer.appointment_time 
+    
         LIMIT 5;
         
         ";

@@ -38,6 +38,7 @@ class RegistrationCodeController extends AbstractController
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @return Response
+     * @throws \Exception
      */
     public function results(Request $request, EntityManagerInterface $entityManager)
     {
@@ -50,32 +51,21 @@ class RegistrationCodeController extends AbstractController
             $this->addFlash('warning', 'No such registration code exists, Try entering it again');
             return $this->redirectToRoute('registration_code');
         }
-      //  date_default_timezone_set('UTC');
 
         $customerFirstName = $recipes[0]->getCustomerFirstName();
         $customerAppointmentTime = $recipes[0]->getAppointmentTime();
 
-        $customerAppointmentTime =  $customerAppointmentTime->format('Y/m/d h:i:s');
-        $now = new DateTime();
-        $x = DateTime::createFromFormat('U', strtotime($customerAppointmentTime));
+        $now = date('Y-m-d h:i:s', time());
+        $x = new DateTime($now);
+        $x = $x->diff($customerAppointmentTime);
 
-       // $customerRemainingTime = $now->diff($x)->format("%y years %m months, %d days, %h hours %i minutes and %s seconds");
-        $interval = array_filter((array) $now->diff($x));
-        $timeLeft = array();
-        $spec = ['y' => 'years', 'm' => 'months', 'd' => 'days', 'h' => 'hours', 'i' => 'minutes', 's' => 'seconds' ];
-        foreach ($spec as $key => $unit) {
-            if (array_key_exists($key, $interval)) {
-                $timeLeft[] = "{$interval[$key]} $unit";
-            }
+        if (1 === $x->invert) {
+            $customerTimeLeft = 0;
+        }
+        else{
+        $customerTimeLeft = $x->format("%Y Years %D Days %H:%I.%S");
         }
 
-        if ((count($timeLeft)) > 1) {
-            $last = array_pop($timeLeft);
-            $timeLeft[] = "and $last";
-        }
-
-        $timeLeft =  implode(' ', $timeLeft);
-        //die();
         $form = $this->createForm(CancelType::class);
 
         $form->handleRequest($request);
@@ -95,6 +85,6 @@ class RegistrationCodeController extends AbstractController
         return $this->render('registration_code/results.html.twig', [
             'form' => $form->createView(),
             'customerName' => $customerFirstName,
-            'remainingTime' => $timeLeft]);
+            'remainingTime' => $customerTimeLeft]);
     }
 }

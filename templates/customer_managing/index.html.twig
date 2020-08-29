@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello CustomerManagingController!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    <h1>Your customers {{ doctor.doctorFirstName }}! </h1>
+    {% if customers is defined %}
+        <table id="customers" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Customer Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+    {% for customer in customers %}
+        {% if customer.appointmentIsFinished == '0'%}
+        <tr>
+            <td>{{ customer.customerFirstName }}</td>
+            <td>
+                {% if atleastOneAppointedCustomer == 1 %}
+                {% if customer.id ==  customerIsInAppointmentId  %}
+                    <button type="btn btn btn-success" disabled>Appoint</button>
+
+                    <a href="#" class="btn btn-success update-endCustomerAppointment" data-id="{{ customer.id }}">End Appointment</a>
+                    <a href="#" class="btn btn-danger delete-customer" data-id="{{ customer.id }}">Cancel</a>
+
+                {% else %}
+
+                    <button type="btn btn-sucess" disabled>Appoint</button>
+                    <button type="btn btn-success" disabled>End Appointment</button>
+                <a href="#" class="btn btn-danger delete-customer" data-id="{{ customer.id }}">Cancel</a>
+
+                {% endif %}
+                    {% else %}
+                        <a href="#"  class="btn btn-success update-customerAppointment" data-id="{{ customer.id }}">Appoint</a>
+                        <button type="btn btn-success" disabled>End Appointment</button>
+                        <a href="#" class="btn btn-danger delete-customer" data-id="{{ customer.id }}">Cancel</a>
+                        {% endif %}
+            </td>
+        </tr>
+        {% endif %}
+    {% endfor %}
+            </tbody>
+            </table>
+    {% endif %}
+
+
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/js/main.js"></script>
+{% endblock %}

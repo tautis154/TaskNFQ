@@ -11,7 +11,12 @@
     <div class="example-wrapper">
 
         <h2>Dear {{ customerName }} </h2>
-        <h2>You still have {{ remainingTime }} till your appointment</h2>
+        {% if remainingTime != '0' %}
+        <h2>You have {{ remainingTime }} till your appointment</h2>
+
+            {% else %}
+            <h2>The doctor should appoint you soon</h2>
+        {% endif %}
         {{ form_start(form) }}
         {{ form_end(form) }}
 

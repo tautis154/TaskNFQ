@@ -49,8 +49,8 @@ class DisplayBoardController extends AbstractController
             return $this->redirectToRoute('displayBoard');
         }
 
-
         $customerInAppointmentId = $customerRepository->getCustomersInAppointmentId();
+
 
         $customersInAppointment = $this->getDoctrine()->getRepository(Customer::class)
             ->findBy([
@@ -73,71 +73,28 @@ class DisplayBoardController extends AbstractController
                 'appointmentTime' => 'ASC'
                 ]
             );
-    //    var_dump($upcomingCustomersAppointment);
-        //die();
+
         $doctorFirstNamesUpcomingVisit = array();
         foreach ($upcomingCustomersAppointment as $customer) {
             $doctorFirstNamesUpcomingVisit[] = ($customer->getFkDoctor()->getDoctorFirstName());
         }
         $timeLeftForCustomer = array();
-        foreach ($upcomingCustomersAppointment as $upcomingCustomer){
 
+
+
+        foreach ($upcomingCustomersAppointment as $upcomingCustomer) {
             $customerAppointmentTime = $upcomingCustomer->getAppointmentTime();
 
-            $customerAppointmentTime =  $customerAppointmentTime->format('Y/m/d h:i:s');
-            $now = new DateTime();
-            $x = DateTime::createFromFormat('U', strtotime($customerAppointmentTime));
+            $now = date('Y-m-d h:i:s', time());
+            $x = new DateTime($now);
+            $x = $x->diff($customerAppointmentTime);
 
-            // $customerRemainingTime = $now->diff($x)->format("%y years %m months, %d days, %h hours %i minutes and %s seconds");
-            $interval =  $now->diff($x);
-            $timeLeft = array();
-            if ($interval->invert == 1) {
-                $timeLeftForCustomer[] = '0';
+            if (1 === $x->invert) {
+                $timeLeftForCustomer[] = 0;
+            } else {
+                $timeLeftForCustomer[] = $x->format("%Y Years %D Days %H:%I.%S");
             }
-            else{
-                $interval = array_filter((array) $now->diff($x));
-                $spec = ['y' => 'years', 'm' => 'months', 'd' => 'days', 'h' => 'hours', 'i' => 'minutes', 's' => 'seconds' ];
-                foreach ($spec as $key => $unit) {
-                    if (array_key_exists($key, $interval)) {
-                        $timeLeft[] = "{$interval[$key]} $unit";
-                    }
-                }
-
-                if ((count($timeLeft)) > 1) {
-                    $last = array_pop($timeLeft);
-                    $timeLeft[] = "and $last";
-                }
-
-                $timeLeft =  implode(' ', $timeLeft);
-
-                $timeLeftForCustomer[] = $timeLeft;
-            }
-
-
-
-            //Padaryt current time diff pries uzregistruota laika
-            //Jei <nei current tai tada padaryt, kad butu = 0
-            //tada setLeftTime() =>
-            //ta persistent flush td
         }
-     //   foreach ($timeLeftForCustomer as $dab){
-         //  var_dump($dab);
-        //}
-       // die();
-
-
-        // var_dump($customerInAppointmentId);
-       // var_dump($customersInAppointment);
-     //  die();
-        //Padaryt current kas yra eilej tai twige padaryt if not null tada rodyt ir else
-        //Tai kad parasytu No one is at the doctor visit now
-        //Tada padaryt kad rodytu tik 5 vizitus tai if padaryt paziuret ar nera null
-        //Jei null tai turi parasyt, kad
-        //Padaryt, kad daktaras galetu ieit i ta if user
-        $customerRemainingTime = "Variantas";
-        //Padaryt taip, kad zmogus galetu matyt kada uzsiregistravo ir kiek valandu jam liko iki jo atejimo
-
-        //IR pakeist kur zmogui atskirai ismeta kad rodytu kiek jam liko valandu (unlimited) ir minuciu min(60) ir sec(60) min
         return $this->render('display_board/board.html.twig', [
             'customers' => $customersInAppointment,
             'doctorFirstNames' => $doctorFirstNames,

@@ -3,17 +3,36 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class DoctorLoginController extends AbstractController
 {
     /**
-     * @Route("/doctor/login", name="doctor_login")
+     * @Route("/login", name="login")
+     * @param Request $request
+     * @param AuthenticationUtils $utils
+     * @return Response
      */
-    public function index()
+    public function login(Request $request, AuthenticationUtils $utils)
     {
-        return $this->render('doctor_login/index.html.twig', [
-            'controller_name' => 'DoctorLoginController',
+        $error = $utils->getLastAuthenticationError();
+
+        $lastUsername = $utils->getLastUsername();
+
+
+        return $this->render('doctor_login/login.html.twig', [
+            'error'     => $error,
+            'last_username' => $lastUsername
         ]);
+    }
+    /**
+     * @Route("/logout", name="app_logout")
+     */
+    public function logout()
+    {
+        throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 }
